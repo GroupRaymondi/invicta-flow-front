@@ -72,3 +72,4 @@ export default defineConfig([
 ])
 ```
 # invicta-flow-front
+# invicta-flow-front
