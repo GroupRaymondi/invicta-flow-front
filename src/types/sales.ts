@@ -15,6 +15,7 @@ export interface ClientProcess {
     clientId: string;
     clientName: string;
     clientEmail: string;
+    clientPhone?: string;
     processType: ProcessType;
     internalProcessNumber: string;
     status: ProcessStatus;

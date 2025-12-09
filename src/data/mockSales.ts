@@ -12,6 +12,7 @@ export const mockSalesProcesses: ClientProcess[] = [
         clientId: 'c1',
         clientName: 'João Silva',
         clientEmail: 'joao.silva@example.com',
+        clientPhone: '(11) 99999-9999',
         processType: mockProcessTypes[0],
         internalProcessNumber: 'PROC-2024-001',
         status: 'IN_PROGRESS',

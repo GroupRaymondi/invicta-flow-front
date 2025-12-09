@@ -1,16 +1,20 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter, DollarSign } from 'lucide-react';
 import { mockSalesProcesses } from '../../data/mockSales';
 import { StatusBadge } from '../../components/common/StatusBadge';
+import { SalesFormModal } from './SalesFormModal';
+import type { ClientProcess } from '../../types/sales';
 
 export const SalesProcessList = () => {
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [processes, setProcesses] = useState(mockSalesProcesses);
 
     const filteredProcesses = useMemo(() => {
-        return mockSalesProcesses.filter(process => {
+        return processes.filter(process => {
             const matchesSearch =
                 process.clientName.toLowerCase().includes(search.toLowerCase()) ||
                 process.clientEmail.toLowerCase().includes(search.toLowerCase()) ||
@@ -20,7 +24,23 @@ export const SalesProcessList = () => {
 
             return matchesSearch && matchesStatus;
         });
-    }, [search, statusFilter]);
+    }, [search, statusFilter, processes]);
+
+    const handleNewSale = (data: Partial<ClientProcess>) => {
+        // In a real app, this would send data to API
+        const newProcess = {
+            ...data,
+            id: Math.random().toString(36).substr(2, 9),
+            clientId: `client-${Math.random().toString(36).substr(2, 9)}`,
+        } as ClientProcess;
+
+        // Update local state
+        setProcesses(prev => [newProcess, ...prev]);
+
+        // Update the mock data source so details page can find it
+        // This is a hack for the frontend-only demo
+        mockSalesProcesses.unshift(newProcess);
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 max-w-7xl mx-auto">
@@ -29,9 +49,12 @@ export const SalesProcessList = () => {
                     <h1 className="text-3xl font-bold text-foreground mb-2">Processos de Vendas</h1>
                     <p className="text-muted-foreground">Gerencie todos os processos de imigração.</p>
                 </div>
-                <button className="bg-primary text-white font-medium px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm">
-                    <Plus size={20} />
-                    Novo Processo
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-primary text-white font-medium px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm"
+                >
+                    <DollarSign size={20} />
+                    Gerar Venda
                 </button>
             </div>
 
@@ -126,6 +149,12 @@ export const SalesProcessList = () => {
                     </table>
                 </div>
             </div>
+
+            <SalesFormModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSubmit={handleNewSale}
+            />
         </div>
     );
 };

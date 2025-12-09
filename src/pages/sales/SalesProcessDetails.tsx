@@ -46,6 +46,12 @@ export const SalesProcessDetails = () => {
                         </div>
                         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                             <span>{process.clientEmail}</span>
+                            {process.clientPhone && (
+                                <>
+                                    <span className="w-1 h-1 rounded-full bg-border" />
+                                    <span>{process.clientPhone}</span>
+                                </>
+                            )}
                             <span className="w-1 h-1 rounded-full bg-border" />
                             <span className="font-mono">{process.internalProcessNumber}</span>
                         </div>
@@ -91,10 +97,15 @@ export const SalesProcessDetails = () => {
                         </div>
                         <div>
                             <p className="text-xs text-muted-foreground font-medium">Pagamento</p>
-                            <div className="flex items-center gap-2">
-                                <StatusBadge status={process.paymentStatus} type="payment" />
-                                <span className="text-xs text-muted-foreground">
-                                    ({process.installments}x)
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                    <StatusBadge status={process.paymentStatus} type="payment" />
+                                    <span className="text-xs text-muted-foreground">
+                                        ({process.installments}x)
+                                    </span>
+                                </div>
+                                <span className="text-sm font-semibold mt-1">
+                                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(process.totalAmount)}
                                 </span>
                             </div>
                         </div>
